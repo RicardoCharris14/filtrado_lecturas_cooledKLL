@@ -3,11 +3,12 @@
 # --- Configuración de parámetros ---
 
 # El script espera 3 argumentos: los últimos 3 parámetros para el ejecutable.
-if [ "$#" -ne 3 ]; then
-    echo "Correct usage: $0 <N_buckets> <B_capacity> <C_size>"
+if [ "$#" -ne 4 ]; then
+    echo "Correct usage: $0 <N_buckets> <B_capacity> <C_size> <distribution>"
     echo "<N_buckets>: number of buckets in the hot filter part of the sketch."
     echo "<B_capacity>: number of entries a bucket have."
     echo "<C_size>: number of elements of the largest compactor in the classic kll part."
+    echo "<distribution>: 1 = abundance distribution | 0 = kmers distribution."
     exit 1
 fi
 
@@ -22,7 +23,7 @@ EXECUTABLE="./bin/estimar_distribucion.exe"
 DATA_DIR="./data/kmers"
 
 # Parámetro fijo que va después del tamaño del k-mer
-FIXED_ARG="1"
+FIXED_ARG=$4
 
 echo "--- Iniciando experimentos ---"
 echo "Ejecutable: $EXECUTABLE"

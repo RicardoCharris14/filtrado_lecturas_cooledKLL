@@ -5,7 +5,7 @@ import os
 import numpy as np
 
 # --- CONFIGURACIÓN ---
-SKETCH_SETTINGS = 'NB_15_BC_5_CS_20' # !!!Modificar para graficar los datos requeridos!!!
+SKETCH_SETTINGS = 'NB_100_BC_10_CS_100' # !!!Modificar para graficar los datos requeridos!!!
 
 CARPETA_DATOS = 'data/frequency_distribution/'+SKETCH_SETTINGS        # Dónde están los CSV
 CARPETA_SALIDA = 'data/images/'+SKETCH_SETTINGS # Nombre de la carpeta donde se guardarán las imágenes
@@ -14,7 +14,7 @@ CARPETA_SALIDA = 'data/images/'+SKETCH_SETTINGS # Nombre de la carpeta donde se 
 USAR_MEDIA_MOVIL = True
 TAMAÑO_VENTANA = 5
 
-print(f"--- Iniciando generación de gráficos ---")
+print(f"--- Iniciando generación de gráficos ---\nLeeyendo datos de: {CARPETA_DATOS}")
 
 # Crear carpeta de salida si no existe
 if not os.path.exists(CARPETA_SALIDA):
@@ -59,6 +59,27 @@ for dist_file in dist_files:
         df = pd.read_csv(dist_file)
         if df.empty: continue
 
+        # --- NUEVA LÓGICA: LEER MEMORY CSV ---
+        # Construimos la ruta del archivo de memoria reemplazando el sufijo
+        memory_file = dist_file.replace('distribution.csv', 'memory.csv')
+        info_unique = ""
+
+        if os.path.exists(memory_file):
+            try:
+                df_mem = pd.read_csv(memory_file)
+                # Verificamos que exista la columna y el archivo no esté vacío
+                if 'unique_elements' in df_mem.columns and not df_mem.empty:
+                    val_unique = df_mem.iloc[0]['unique_elements']
+                    val_total = df_mem.iloc[0]['elements']
+                    info_unique = f" - Elementos total/unicos: {val_total}/{val_unique}"
+                else:
+                    print(f"[AVISO] Columna 'unique_elements' no encontrada en {os.path.basename(memory_file)}")
+            except Exception as e:
+                print(f"[ERROR] Al leer memoria {os.path.basename(memory_file)}: {e}")
+        else:
+            print(f"[AVISO] No se encontró archivo de memoria para {label}")
+        # -------------------------------------
+
         # --- CÁLCULOS ---
         df['abs_err_quantile'] = (df['real_quantile'] - df['estimated_quantile']).abs()
         df['abs_err_rank'] = (df['real_rank'] - df['estimated_rank']).abs()
@@ -79,7 +100,9 @@ for dist_file in dist_files:
 
         # --- GRAFICACIÓN ---
         fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 6))
-        fig.suptitle(f'Análisis: {label} {titulo_extra}', fontsize=16)
+        
+        # Título actualizado con la información de unique_elements
+        fig.suptitle(f'Análisis: {label} {titulo_extra}{info_unique}', fontsize=16, fontweight='bold')
 
         # Gráfico 1: Relativo
         plot_dual_axis(ax1, df['quantile'], df['rel_err_quantile'], df['rel_err_rank'],
@@ -97,11 +120,9 @@ for dist_file in dist_files:
         nombre_imagen = f"{label}_analisis.png"
         ruta_completa = os.path.join(CARPETA_SALIDA, nombre_imagen)
         
-        # dpi=300 genera una imagen de alta resolución
         plt.savefig(ruta_completa, dpi=150) 
         print(f"Guardado: {ruta_completa}")
         
-        # Importante: cerrar la figura para liberar memoria y no mostrarla en pantalla
         plt.close(fig)
 
     except Exception as e:

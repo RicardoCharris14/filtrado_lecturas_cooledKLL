@@ -1,2 +1,2 @@
-total_elements,sketch_memory,vector_memory,compressed_vector_memory,n_buckets,b_capacity,comp_size,comp_factor
-512,3536,4120,16408,15,5,20,0.7
+elements,unique_elements,sketch_memory,vector_memory,compressed_vector_memory,n_buckets,b_capacity,comp_size,comp_factor
+512,512,3536,4120,16408,15,5,20,0.7
