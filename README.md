@@ -54,7 +54,7 @@ Para almacenar los k-mers en un archivo y poder ejecutar los experimentos con di
 1. Compilar y ejecutar **leer_kmers.cpp** para obtener los k-mers con sus frecuencias y almacenarlos en un CSV.
 
     ```bash
-    g++ -std=c++20 leer_kmers source/leer_kmers.cpp
+    g++ -std=c++20 -o leer_kmers source/leer_kmers.cpp
     ./leer_kmers <folder_url> <k>
     ```
     **<folder_url>:** path to the folder where FASTA files are located.
@@ -65,7 +65,7 @@ Para almacenar los k-mers en un archivo y poder ejecutar los experimentos con di
 2. Compilar y ejecutar **estimar_distribucion.cpp** para obtener los resultados de las distribuciones.
 
     ```bash
-    g++ -std=c++20 estimar_distribucion source/estimar_distribucion.cpp
+    g++ -std=c++20 -o estimar_distribucion source/estimar_distribucion.cpp
     ./estimar_distribucion <kmers_file> <k-mers_length> <distribution> <N_buckets> <B_capacity> <C_size>
     ```
 
