@@ -10,7 +10,7 @@
 #include <filesystem>
 #include <fstream>
 #include <string>
-#include "cooled-kll.cpp"
+#include "../source/cooled-kll.cpp"
 
 void frequencyExperiments(std::vector<std::pair<uint64_t, uint64_t>>& kmers_dist, int k_, float quantile_ratio,
      size_t n_buckets=100, size_t buckets_capacity = 10, int compactor_size = 100, float compression_factor = 0.7){
